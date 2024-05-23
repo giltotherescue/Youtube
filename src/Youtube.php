@@ -691,23 +691,26 @@ class Youtube
     public function decodeSingle(&$apiData)
     {
         $resObj = json_decode($apiData);
+        
         if (isset($resObj->error)) {
             $msg = "Error " . $resObj->error->code . " " . $resObj->error->message;
+            
             if (isset($resObj->error->errors[0])) {
                 $msg .= " : " . $resObj->error->errors[0]->reason;
             }
 
             throw new \Exception($msg);
+            
         } else {
-            if(isset($resObj->items)){
-                $itemsArray = $resObj->items;
-                if (!is_array($itemsArray) || count($itemsArray) == 0) {
-                    return false;
-                } else {
-                    return $itemsArray[0];
-                }
+            $itemsArray = isset($resObj->items) 
+                ? $resObj->items 
+                : null;
+            
+            if ( ! is_array($itemsArray) || count($itemsArray) == 0) {
+                return false;
+            } else {
+                return isset($itemsArray[0]) ? $itemsArray[0] : false;
             }
-           return false;
         }
     }
 
